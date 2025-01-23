@@ -2,7 +2,7 @@ on:
   workflow_run:
     workflows: [Publish to Docker]
     types: [completed]
- 
+ - exit 1  
 jobs:
   on-failure:
     runs-on: ubuntu-latest
