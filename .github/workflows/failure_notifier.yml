@@ -1,28 +1,17 @@
-on:
+stages:
+  - build
+  - deploy
 
-  workflow_run:
+build:
+  script:
+    - echo "Running the build process..."
+  when: on_failure
+  after_script:
+    - curl -X POST -H 'Content-type: application/json' --data '{"text":"Pipeline failed in GitLab! Please check the details."}' $SLACK_WEBHOOK_URL
 
-    workflows: [Publish to Docker]
-
-    types: [completed]
- 
-jobs:
-
-  on-failure:
-
-    runs-on: ubuntu-latest
-
-    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
-
-    steps:
-
-      - run:  |
-
-          curl -X POST -H 'Content-type: application/json' \
-
-          --data '{"text":"Failed"}' ${{ secrets.SLACK_WEBHOOK_URL }}
- 
-
-
- 
-          
+deploy:
+  script:
+    - echo "Deploying the application..."
+  when: on_failure
+  after_script:
+    - curl -X POST -H 'Content-type: application/json' --data '{"text":"Pipeline failed in GitLab! Please check the details."}' $SLACK_WEBHOOK_URL
